@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2. Bundesliga Manager 2026/27</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+  text-align: center;
+  margin: 0;
+  color: #222;
+}
+
+h1 {
+  background: linear-gradient(135deg, #16213e, #0f3460);
+  color: white;
+  padding: 16px 12px;
+  margin: 0;
+  font-size: clamp(24px, 5vw, 34px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.league-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: white;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+.subtitle {
+  margin: 12px 0 18px;
+  color: #555;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.controls label {
+  font-weight: bold;
+}
+
+select,
+input {
+  border: 1px solid #ccd3dc;
+  border-radius: 7px;
+  background: white;
+}
+
+#matchday {
+  padding: 9px 12px;
+  font-size: 15px;
+}
+
+.match {
+  background: white;
+  margin: 12px auto;
+  padding: 18px;
+  width: min(720px, calc(100% - 28px));
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 82px;
+  flex-wrap: wrap;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.match select,
+.match input {
+  padding: 9px;
+  font-size: 14px;
+}
+
+.match select {
+  min-width: 145px;
+}
+
+.match input {
+  width: 58px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.match img {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.score-separator {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+button {
+  padding: 8px 13px;
+  border: none;
+  background: #1473e6;
+  color: white;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+button:hover {
+  background: #0d5dbc;
+}
+
+button.delete {
+  background: #d9363e;
+}
+
+button.delete:hover {
+  background: #b92830;
+}
+
+.add-button {
+  margin: 5px 0 14px;
+  font-size: 15px;
+}
+
+h2 {
+  margin-top: 25px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  padding: 0 10px 30px;
+}
+
+table {
+  margin: 12px auto;
+  border-collapse: collapse;
+  width: min(760px, 100%);
+  background: white;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 9px 8px;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+th {
+  background: #202a44;
+  color: white;
+}
+
+td:first-child,
+th:first-child {
+  width: 46px;
+  text-align: center;
+}
+
+td.team-cell {
+  text-align: left;
+  min-width: 185px;
+  font-weight: 600;
+}
+
+td img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 7px;
+}
+
+tbody tr:nth-child(1),
+tbody tr:nth-child(2) {
+  background: #e7f5e9;
+}
+
+tbody tr:nth-child(3) {
+  background: #fff7d6;
+}
+
+tbody tr:nth-last-child(1),
+tbody tr:nth-last-child(2) {
+  background: #fde8e8;
+}
+
+tbody tr:nth-last-child(3) {
+  background: #fff0df;
+}
+
+.legend {
+  width: min(760px, calc(100% - 30px));
+  margin: 0 auto 10px;
+  font-size: 13px;
+  color: #555;
+  text-align: left;
+}
+
+.empty {
+  margin: 25px auto;
+  color: #666;
+}
+
+@media (max-width: 620px) {
+  .match {
+    gap: 7px;
+    padding: 14px 8px;
+  }
+
+  .match select {
+    min-width: 120px;
+    max-width: 145px;
+  }
+
+  .match img {
+    width: 38px;
+    height: 38px;
+  }
+
+  th,
+  td {
+    padding: 8px 5px;
+    font-size: 13px;
+  }
+
+  td.team-cell {
+    min-width: 160px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>
+  <img class="league-logo"
+       src="https://www.fifplay.com/img/public/bundesliga-2-logo.png"
+       alt="2. Bundesliga"
+       onerror="this.style.display='none'">
+  <span>2. Bundesliga Manager 2026/27</span>
+</h1>
+<p class="subtitle">Dein eigener Ergebnis- und Tabellenrechner</p>
+
+<div class="controls">
+  <label for="matchday">Spieltag:</label>
+  <select id="matchday" onchange="changeMatchday()"></select>
+</div>
+
+<div id="matches"></div>
+
+<button class="add-button" onclick="addMatch()">➕ Spiel hinzufügen</button>
+
+<h2>📊 Tabelle</h2>
+
+<div class="legend">
+  🟢 Platz 1–2: Aufstieg &nbsp; 🟡 Platz 3: Relegation &nbsp;
+  🟠 Platz 16: Relegation &nbsp; 🔴 Platz 17–18: Abstieg
+</div>
+
+<div class="table-wrapper">
+<table>
+<thead>
+<tr>
+  <th>Pl.</th>
+  <th>Team</th>
+  <th>Sp.</th>
+  <th>Pkt.</th>
+  <th>Tore</th>
+  <th>Diff.</th>
+</tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+</div>
+
+<script>
+const STORAGE_KEY = "zweite-bundesliga-2026-27";
+
+const fallbackLogo =
+  "https://upload.wikimedia.org/wikipedia/commons/8/84/No_Image_Available.jpg";
+
+/*
+  2. Bundesliga 2026/27
+  Die Logos werden über die Favicons der offiziellen Vereins-Websites geladen.
+  Dadurch muss nichts lokal gespeichert werden.
+*/
+const teams = [
+  {name:"Arminia Bielefeld", domain:"arminia.de"},
+  {name:"Eintracht Braunschweig", domain:"eintracht.com"},
+  {name:"VfL Bochum", domain:"vfl-bochum.de"},
+  {name:"Energie Cottbus", domain:"fcenergie.de"},
+  {name:"SV Darmstadt 98", domain:"sv98.de"},
+  {name:"Dynamo Dresden", domain:"dynamo-dresden.de"},
+  {name:"Greuther Fürth", domain:"sgf1903.de"},
+  {name:"Hannover 96", domain:"hannover96.de"},
+  {name:"Hertha BSC", domain:"herthabsc.com"},
+  {name:"1. FC Heidenheim", domain:"fc-heidenheim.de"},
+  {name:"1. FC Kaiserslautern", domain:"fck.de"},
+  {name:"Karlsruher SC", domain:"ksc.de"},
+  {name:"Holstein Kiel", domain:"holstein-kiel.de"},
+  {name:"1. FC Magdeburg", domain:"1.fc-magdeburg.de"},
+  {name:"1. FC Nürnberg", domain:"fcn.de"},
+  {name:"VfL Osnabrück", domain:"vfl.de"},
+  {name:"FC St. Pauli", domain:"fcstpauli.com"},
+  {name:"VfL Wolfsburg", domain:"vfl-wolfsburg.de"}
+];
+
+function logoUrl(domain) {
+  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+}
+
+function getLogo(name) {
+  const team = teams.find(t => t.name === name);
+  return team ? logoUrl(team.domain) : fallbackLogo;
+}
+
+function teamOptions(selected) {
+  return teams.map(t =>
+    `<option value="${t.name}" ${t.name === selected ? "selected" : ""}>${t.name}</option>`
+  ).join("");
+}
+
+function loadData() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function saveData(data) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function currentDay() {
+  return document.getElementById("matchday").value;
+}
+
+function renderMatchdays() {
+  const select = document.getElementById("matchday");
+  let html = "";
+
+  for (let i = 1; i <= 34; i++) {
+    html += `<option value="${i}">Spieltag ${i}</option>`;
+  }
+
+  select.innerHTML = html;
+
+  const savedDay = localStorage.getItem("zweite-bundesliga-current-matchday");
+  if (savedDay && Number(savedDay) >= 1 && Number(savedDay) <= 34) {
+    select.value = savedDay;
+  }
+}
+
+function changeMatchday() {
+  localStorage.setItem("zweite-bundesliga-current-matchday", currentDay());
+  renderMatches();
+  renderTable();
+}
+
+function renderMatches() {
+  const data = loadData();
+  const day = currentDay();
+  const matches = data[day] || [];
+
+  if (matches.length === 0) {
+    document.getElementById("matches").innerHTML =
+      `<div class="empty">Noch keine Spiele für Spieltag ${day} eingetragen.</div>`;
+    return;
+  }
+
+  let html = "";
+
+  matches.forEach((m, i) => {
+    html += `
+    <div class="match">
+      <img src="${getLogo(m.team1)}"
+           alt="${m.team1}"
+           onerror="this.onerror=null;this.src='${fallbackLogo}'">
+
+      <select id="team1-${i}">${teamOptions(m.team1)}</select>
+
+      <input type="number" min="0" max="99" id="t1-${i}" value="${m.t1 ?? ""}" aria-label="Tore Heimteam">
+
+      <span class="score-separator">:</span>
+
+      <input type="number" min="0" max="99" id="t2-${i}" value="${m.t2 ?? ""}" aria-label="Tore Auswärtsteam">
+
+      <select id="team2-${i}">${teamOptions(m.team2)}</select>
+
+      <img src="${getLogo(m.team2)}"
+           alt="${m.team2}"
+           onerror="this.onerror=null;this.src='${fallbackLogo}'">
+
+      <button onclick="save(${i})">💾 Speichern</button>
+      <button class="delete" onclick="removeMatch(${i})">❌</button>
+    </div>`;
+  });
+
+  document.getElementById("matches").innerHTML = html;
+
+  document.querySelectorAll(".match select, .match input").forEach(element => {
+    element.addEventListener("change", saveAuto);
+    element.addEventListener("input", () => {
+      if (element.tagName === "INPUT") saveAuto();
+    });
+  });
+}
+
+function saveAuto() {
+  const data = loadData();
+  const day = currentDay();
+  const matches = data[day] || [];
+
+  document.querySelectorAll(".match").forEach((el, i) => {
+    if (!matches[i]) return;
+
+    matches[i].team1 = document.getElementById(`team1-${i}`).value;
+    matches[i].team2 = document.getElementById(`team2-${i}`).value;
+    matches[i].t1 = document.getElementById(`t1-${i}`).value;
+    matches[i].t2 = document.getElementById(`t2-${i}`).value;
+  });
+
+  data[day] = matches;
+  saveData(data);
+
+  refreshMatchLogos();
+  renderTable();
+}
+
+function refreshMatchLogos() {
+  document.querySelectorAll(".match").forEach((match, i) => {
+    const team1 = document.getElementById(`team1-${i}`)?.value;
+    const team2 = document.getElementById(`team2-${i}`)?.value;
+    const images = match.querySelectorAll("img");
+
+    if (images[0] && team1) {
+      images[0].src = getLogo(team1);
+      images[0].alt = team1;
+    }
+
+    if (images[1] && team2) {
+      images[1].src = getLogo(team2);
+      images[1].alt = team2;
+    }
+  });
+}
+
+function addMatch() {
+  const data = loadData();
+  const day = currentDay();
+
+  if (!data[day]) data[day] = [];
+
+  const usedTeams = new Set();
+  data[day].forEach(match => {
+    usedTeams.add(match.team1);
+    usedTeams.add(match.team2);
+  });
+
+  const freeTeams = teams.filter(t => !usedTeams.has(t.name));
+
+  data[day].push({
+    team1: freeTeams[0]?.name || teams[0].name,
+    team2: freeTeams[1]?.name || teams[1].name,
+    t1: "",
+    t2: ""
+  });
+
+  saveData(data);
+  renderMatches();
+}
+
+function removeMatch(i) {
+  const data = loadData();
+  const day = currentDay();
+
+  if (!data[day]) return;
+
+  data[day].splice(i, 1);
+
+  saveData(data);
+  renderMatches();
+  renderTable();
+}
+
+function save() {
+  saveAuto();
+}
+
+function renderTable() {
+  const data = loadData();
+  const table = {};
+
+  teams.forEach(t => {
+    table[t.name] = {
+      played: 0,
+      points: 0,
+      goalsFor: 0,
+      goalsAgainst: 0
+    };
+  });
+
+  Object.values(data).forEach(day => {
+    if (!Array.isArray(day)) return;
+
+    day.forEach(m => {
+      if (m.t1 === "" || m.t2 === "") return;
+      if (!table[m.team1] || !table[m.team2]) return;
+      if (m.team1 === m.team2) return;
+
+      const t1 = Number.parseInt(m.t1, 10);
+      const t2 = Number.parseInt(m.t2, 10);
+
+      if (Number.isNaN(t1) || Number.isNaN(t2)) return;
+      if (t1 < 0 || t2 < 0) return;
+
+      table[m.team1].played++;
+      table[m.team2].played++;
+
+      table[m.team1].goalsFor += t1;
+      table[m.team1].goalsAgainst += t2;
+
+      table[m.team2].goalsFor += t2;
+      table[m.team2].goalsAgainst += t1;
+
+      if (t1 > t2) {
+        table[m.team1].points += 3;
+      } else if (t2 > t1) {
+        table[m.team2].points += 3;
+      } else {
+        table[m.team1].points += 1;
+        table[m.team2].points += 1;
+      }
+    });
+  });
+
+  const sorted = Object.entries(table).sort((a, b) => {
+    const diffA = a[1].goalsFor - a[1].goalsAgainst;
+    const diffB = b[1].goalsFor - b[1].goalsAgainst;
+
+    return (
+      b[1].points - a[1].points ||
+      diffB - diffA ||
+      b[1].goalsFor - a[1].goalsFor ||
+      a[0].localeCompare(b[0], "de")
+    );
+  });
+
+  let html = "";
+
+  sorted.forEach(([team, val], index) => {
+    const diff = val.goalsFor - val.goalsAgainst;
+    const diffText = diff > 0 ? `+${diff}` : `${diff}`;
+
+    html += `
+      <tr>
+        <td>${index + 1}</td>
+        <td class="team-cell">
+          <img src="${getLogo(team)}"
+               alt="${team}"
+               onerror="this.onerror=null;this.src='${fallbackLogo}'">
+          ${team}
+        </td>
+        <td>${val.played}</td>
+        <td><strong>${val.points}</strong></td>
+        <td>${val.goalsFor}:${val.goalsAgainst}</td>
+        <td>${diffText}</td>
+      </tr>`;
+  });
+
+  document.getElementById("table").innerHTML = html;
+}
+
+renderMatchdays();
+renderMatches();
+renderTable();
+</script>
+
+</body>
+</html>
